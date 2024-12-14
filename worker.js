@@ -3,10 +3,6 @@ import { connect } from "cloudflare:sockets";
 // Variables
 const rootDomain = "bluehat358.us.kg"; // Ganti dengan domain utama kalian
 const serviceName = "ls"; // Ganti dengan nama workers kalian
-const apiKey = ""; // Ganti dengan Global API key kalian (https://dash.cloudflare.com/profile/api-tokens)
-const apiEmail = ""; // Ganti dengan email yang kalian gunakan
-const accountID = ""; // Ganti dengan Account ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
-const zoneID = ""; // Ganti dengan Zone ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
 let isApiReady = false;
 let proxyIP = "";
 let cachedProxyList = [];
@@ -165,6 +161,11 @@ function getAllConfig(request, hostName, proxyList, page = 0) {
 export default {
   async fetch(request, env, ctx) {
     try {
+      const apiKey = env.APIKEY; // Ganti dengan Global API key kalian (https://dash.cloudflare.com/profile/api-tokens)
+      const apiEmail = env.EMAIL; // Ganti dengan email yang kalian gunakan
+      const accountID = env.ACCOUNTID; // Ganti dengan Account ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
+      const zoneID = env.ZONEID; // Ganti dengan Zone ID kalian (https://dash.cloudflare.com -> Klik domain yang kalian gunakan)
+      const bankUrl = env.PROXY_BANK_URL; // Ganti dengan URL bank proxy kalian (https://raw.githubusercontent.com/BlueHat358/Proxy-Bank/main/proxies.txt)
       const url = new URL(request.url);
       const upgradeHeader = request.headers.get("Upgrade");
 
@@ -190,8 +191,7 @@ export default {
 
         // Queries
         const countrySelect = url.searchParams.get("cc")?.split(",");
-        const proxyBankUrl =
-          url.searchParams.get("proxy-list") || env.PROXY_BANK_URL;
+        const proxyBankUrl = url.searchParams.get("proxy-list") || bankUrl;
         let proxyList = (await getProxyList(proxyBankUrl)).filter((proxy) => {
           // Filter proxies by Country
           if (countrySelect) {
