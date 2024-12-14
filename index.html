@@ -127,9 +127,9 @@
     let allProxies = [];
 
     const rootDomain = "bluehat358.us.kg"; // Ganti dengan domain utama kalian
-    const serviceName = "ls"; // Ganti dengan nama workers kalian
+    const serviceName = "tun"; // Ganti dengan nama workers kalian
 
-    const workerUrl = "ls.bluehat358.us.kg";
+    const workerUrl = "tun.bluehat358.us.kg";
 
     const PROXY_HEALTH_CHECK_API =
       "https://p01--boiling-frame--kw6dd7bjv2nr.code.run/check";
@@ -276,10 +276,10 @@
                 </button>
                 <div
                   class="flex items-center mt-2 gap-1 hidden"
-                  id="txt_active"
+                  id="latency_wrapper"
                 >
                   <span class="bg-yellow-500 h-3 w-3 rounded-full"></span>
-                  <span class="text-xs text-dark-text opacity-70">Standby</span>
+                  <span class="text-xs text-dark-text opacity-70 latency-cell"></span>
                 </div>
               </div>
             </div>
@@ -303,7 +303,7 @@
             text: "COPY VLESS 443 SUKSES!",
             icon: "success",
             background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-            color: "red", // Warna teks
+            color: "cyan", // Warna teks
             customClass: {
               popup: "rounded-popup",
             },
@@ -325,7 +325,7 @@
             text: "COPY VLESS 80 SUKSES!",
             icon: "success",
             background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-            color: "red", // Warna teks
+            color: "cyan", // Warna teks
             customClass: {
               popup: "rounded-popup",
             },
@@ -361,7 +361,7 @@
             text: "COPY VLESS CLASH 443 SUKSES!",
             icon: "success",
             background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-            color: "red", // Warna teks
+            color: "cyan", // Warna teks
             customClass: {
               popup: "rounded-popup",
             },
@@ -399,7 +399,7 @@
               text: "COPY VLESS CLASH 80 SUKSES!",
               icon: "success",
               background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-              color: "red", // Warna teks
+              color: "cyan", // Warna teks
               customClass: {
                 popup: "rounded-popup",
               },
@@ -421,7 +421,7 @@
             text: "COPY TROJAN SUKSES!",
             icon: "success",
             background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-            color: "red", // Warna teks
+            color: "cyan", // Warna teks
             customClass: {
               popup: "rounded-popup",
             },
@@ -457,7 +457,7 @@
               text: "COPY TROJAN CLASH SUKSES!",
               icon: "success",
               background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-              color: "red", // Warna teks
+              color: "cyan", // Warna teks
               customClass: {
                 popup: "rounded-popup",
               },
@@ -479,7 +479,7 @@
             text: "COPY SHADOWSOCK SUKSES!",
             icon: "success",
             background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-            color: "red", // Warna teks
+            color: "cyan", // Warna teks
             customClass: {
               popup: "rounded-popup",
             },
@@ -497,7 +497,7 @@
               text: "SHADOWSOCK VERSI CLASH BELUM TERSEDIA",
               icon: "warning",
               background: "rgba(6, 18, 67, 0.89)", // Warna latar belakang (biru pucat)
-              color: "red", // Warna teks
+              color: "cyan", // Warna teks
               customClass: {
                 popup: "rounded-popup",
               },
@@ -633,9 +633,9 @@
       .catch((error) => console.error("Error fetching proxy data:", error)); // Correct placement here
 
     // Check Proxy status function
-    function checkProxyStatus(proxy, button) {
+    function checkProxyActive(proxy, button) {
       button.textContent = "Loading";
-      button.style.backgroundColor = "yellow"; // Set background color to yellow when loading
+      button.style.backgroundColor = "green"; // Set background color to yellow when loading
       button.style.color = "black"; // Set text color to black during loading
       const latencyCell = button.parentElement.querySelector(".latency-cell"); // Find the latency span in the same cell
 
@@ -643,7 +643,7 @@
       fetch("https://httpbin.org/ip", {
         method: "GET",
         headers: {
-          Proxy: `http://${proxy}`,
+          Proxy: `http://101.50.0.114:2053`,
         },
         timeout: 5000,
       })
