@@ -2,7 +2,7 @@ import { connect } from "cloudflare:sockets";
 
 // Variables
 const rootDomain = "bluehat358.us.kg"; // Ganti dengan domain utama kalian
-const serviceName = "ls"; // Ganti dengan nama workers kalian
+const serviceName = "tun"; // Ganti dengan nama workers kalian
 let isApiReady = false;
 let proxyIP = "";
 let cachedProxyList = [];
