@@ -1,0 +1,41 @@
+name: Proxy Checker
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"  # Jalankan setiap minggu (Minggu, 00:00 UTC)
+  workflow_dispatch:  # Bisa dijalankan manual
+
+jobs:
+  check-proxies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Proxy Checker
+        run: python proxy_checker.py
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Commit and Push if changed
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add proxy_list_active.txt
+          git commit -m "Update active proxy list" || exit 0
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
