@@ -1,4 +1,5 @@
 import requests
+import time
 
 PROXY_HEALTH_CHECK_API = "https://api-proxy.bluehat358.us.kg"
 INPUT_FILE = "proxy_list.txt"
@@ -9,25 +10,24 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
 
-def check_proxy(ip, port, host="speed.cloudflare.com", tls="true"):
+def check_proxy(ip, port, host="speed.cloudflare.com", tls="true", max_retries=3):
     url = f"{PROXY_HEALTH_CHECK_API}?ip={ip}&port={port}&host={host}&tls={tls}"
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=10)
-        data = response.json()
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=HEADERS, timeout=30)
+            data = response.json()
 
-        # Jika response berisi error, anggap proxy mati
-        if "error" in data:
-            print(f"⚠️ Error response from API for {ip}:{port} → {data['error']}")
-            return False
-
-        # Pastikan hasilnya dari Cloudflare & ProxyIP True
-        if data.get("proxyip") is True:
-            return True
-        else:
-            return False  # Proxy tidak valid atau bukan CF
-    except requests.RequestException as e:
-        print(f"⚠️ Request error for {ip}:{port} → {e}")
-        return False
+            if "error" in data:
+                print(f"⚠️ API Error for {ip}:{port} → {data['error']}")
+                return False
+            
+            return data.get("proxyip", False)  # True jika proxy aktif, False jika tidak
+        except requests.RequestException as e:
+            print(f"⚠️ Request error for {ip}:{port} (Attempt {attempt+1}/{max_retries}) → {e}")
+            time.sleep(5)  # Tunggu 5 detik sebelum retry
+    
+    return False  # Jika gagal semua retry, anggap proxy mati
 
 def main():
     with open(INPUT_FILE, "r") as f, open(TEMP_FILE, "w") as temp_f:
@@ -39,7 +39,7 @@ def main():
             ip, port = parts[:2]  # Ambil IP dan Port
             is_active = check_proxy(ip, port)
 
-            # Log status ke output GitHub Actions
+            # Log status ke output
             status = "✅ Active" if is_active else "❌ Dead"
             print(f"{ip},{port} {status}")
 
