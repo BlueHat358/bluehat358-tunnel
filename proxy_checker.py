@@ -9,11 +9,18 @@ def check_proxy(ip, port, host="speed.cloudflare.com", tls="true"):
     url = f"{PROXY_HEALTH_CHECK_API}?ip={ip}&port={port}&host={host}&tls={tls}"
     try:
         response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise error jika HTTP status bukan 2xx
         data = response.json()
-        return data.get("proxyip", False)  # True jika proxy aktif, False jika tidak
+
+        # Pastikan "proxyip" ada di response dan bernilai True
+        return data.get("proxyip") is True
+    
     except requests.RequestException as e:
         print(f"⚠️ Request error for {ip}:{port} → {e}")
-        return False
+    except ValueError:
+        print(f"⚠️ Invalid JSON response from API for {ip}:{port}")
+
+    return False  # Jika error atau tidak memenuhi kriteria, dianggap dead
 
 def main():
     with open(INPUT_FILE, "r") as f, open(TEMP_FILE, "w") as temp_f:
@@ -25,7 +32,7 @@ def main():
             ip, port = parts[:2]  # Ambil IP dan Port
             is_active = check_proxy(ip, port)
 
-            # Log status ke output GitHub Actions
+            # Log status ke output
             status = "✅ Active" if is_active else "❌ Dead"
             print(f"{ip},{port} {status}")
 
