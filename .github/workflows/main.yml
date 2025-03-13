@@ -33,7 +33,6 @@ jobs:
       - name: Commit and Push if changed
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-              - name: Commit and Push if changed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -41,5 +40,5 @@ jobs:
           git commit -m "Update active proxy list" || exit 0
           
           # Menarik perubahan terbaru dari remote sebelum push
-          git pull --rebase origin main
+          git pull --rebase origin main || true
           git push origin main
