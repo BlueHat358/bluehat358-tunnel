@@ -39,18 +39,21 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Periksa apakah file proxy_list_active.txt ada
+          if [[ ! -f proxy_list_active.txt ]]; then
+            echo "File proxy_list_active.txt tidak ditemukan. Keluar."
+            exit 1
+          fi
+
           # Cek apakah ada perubahan sebelum commit
           if [[ `git status --porcelain proxy_list_active.txt` ]]; then
+            echo "Ada perubahan pada proxy_list_active.txt. Melakukan commit dan push..."
             git add proxy_list_active.txt
             git commit -m "Update active proxy list"
 
             # Pastikan branch up-to-date sebelum push
             git fetch origin main
-
-            # Gunakan stash jika ada perubahan lokal yang bertabrakan
-            git stash
             git pull --rebase origin main || git reset --hard origin/main
-            git stash pop || true  # Pop stash jika ada, tapi jangan error jika tidak ada
 
             # Push perubahan
             git push origin main
