@@ -17,7 +17,7 @@ def check_proxy(ip, port, host="speed.cloudflare.com", tls="true", max_retries=3
     
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, headers=HEADERS, timeout=20)
+            response = requests.get(url, headers=HEADERS, timeout=30)
             data = response.json()
 
             if "error" in data:
