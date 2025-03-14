@@ -1,0 +1,21 @@
+name: Debug GitHub App Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Check Token Permissions
+        run: |
+          echo "Generated Token: ${{ steps.generate-token.outputs.token }}"
+          curl -s -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}" \
+            https://api.github.com/repos/BlueHat358/bluehat358-tunnel | jq .permissions
