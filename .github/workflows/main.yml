@@ -13,6 +13,9 @@ jobs:
         run: |
           sudo bash -c 'echo "nameserver 1.1.1.1" > /etc/resolv.conf'
           sudo bash -c 'echo "nameserver 8.8.8.8" >> /etc/resolv.conf'
+      - name: Test API Connection
+        run: curl -v https://api-proxy.bluehat358.us.kg
+
 
       - name: Checkout repo
         uses: actions/checkout@v4
