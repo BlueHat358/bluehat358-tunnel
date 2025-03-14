@@ -9,6 +9,11 @@ jobs:
   check-proxies:
     runs-on: ubuntu-latest
     steps:
+      - name: Set DNS Resolver
+        run: |
+          sudo bash -c 'echo "nameserver 1.1.1.1" > /etc/resolv.conf'
+          sudo bash -c 'echo "nameserver 8.8.8.8" >> /etc/resolv.conf'
+
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -36,9 +41,20 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add proxy_list_active.txt
-          git commit -m "Update active proxy list" || exit 0
           
-          # Menarik perubahan terbaru dari remote sebelum push
-          git pull --rebase origin main || true
-          git push origin main
+          # Cek apakah ada perubahan sebelum commit
+          if [[ `git status --porcelain proxy_list_active.txt` ]]; then
+            git add proxy_list_active.txt
+            git commit -m "Update active proxy list"
+
+            # Simpan perubahan sementara sebelum pull
+            git stash
+            
+            # Menarik perubahan terbaru dari remote sebelum push
+            git pull --rebase origin main || true
+            git stash pop
+            
+            git push origin main
+          else
+            echo "Tidak ada perubahan pada proxy_list_active.txt, tidak perlu commit."
+          fi
