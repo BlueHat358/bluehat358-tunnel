@@ -1,7 +1,7 @@
 import requests
 import time
 
-PROXY_HEALTH_CHECK_API = "https://api-proxy.bluehat358.us.kg"
+PROXY_HEALTH_CHECK_API = "https://bluehat358-api-proxy.nawank358.workers.dev"
 INPUT_FILE = "proxy_list.txt"
 TEMP_FILE = "proxy_list_temp.txt"
 OUTPUT_FILE = "proxy_list_active.txt"
